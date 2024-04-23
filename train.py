@@ -29,8 +29,8 @@ if __name__ == "__main__":
     en_dataset_name =  os.getenv("EN_DATASET")
 
     print("Loading dataset from huggingface hub")
-    id_dataset = load_dataset(id_dataset_name, split = 'train').select(range(1000))
-    en_dataset = load_dataset(en_dataset_name, split = 'train').select(range(1000))
+    id_dataset = load_dataset(id_dataset_name, split = 'train').select(range(100000))
+    en_dataset = load_dataset(en_dataset_name, split = 'train').select(range(100000))
     if show_stats:
         print("Dataset distribution")
         print("Indonesian rows:", len(id_dataset))
@@ -44,17 +44,17 @@ if __name__ == "__main__":
         print("Source distribution")
         print(pd.Series(en_dataset["source"]).value_counts())
 
-    dataset = concatenate_datasets([id_dataset, en_dataset]).shuffle(seed = 42)
-    dataset = dataset.filter(lambda example: example['label_text'] != 'unlabeled', num_proc = CPU_COUNT)
-    col_names = dataset.column_names
-    num_rows = len(dataset)
-    
     label_index = {
         'negative' : 0,
         'neutral' : 1, 
         'positive' : 2
         }
     reverse_label_index = {str(v):k for k,v in label_index.items()}
+
+    dataset = concatenate_datasets([id_dataset, en_dataset]).shuffle(seed = 42)
+    dataset = dataset.filter(lambda example: example['label_text'] in label_index.keys(), num_proc = CPU_COUNT)
+    col_names = dataset.column_names
+    num_rows = len(dataset)
 
     def convert_labels_to_ids(examples):
         examples['label'] = [label_index[x] for x in examples['label_text']]
@@ -102,7 +102,8 @@ if __name__ == "__main__":
                                     num_train_epochs = epoch,
                                     save_strategy = "no",
                                     learning_rate = learning_rate,
-                                    tpu_num_cores = 4
+                                    tpu_num_cores = 8,
+                                    dataloader_num_workers = CPU_COUNT
                                     )
     trainer = Trainer(
         model = model,
