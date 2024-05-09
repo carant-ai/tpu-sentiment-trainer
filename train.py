@@ -16,7 +16,6 @@ import torch_xla.core.xla_model as xm
 if __name__ == "__main__":
     start_main = datetime.now()
 
-    CPU_COUNT = 240
     show_stats = False
     print("Read model hyperparameter from .env")
     model_id = str(uuid.uuid4())
@@ -27,10 +26,11 @@ if __name__ == "__main__":
     val_size = float(os.getenv('VAL_SIZE'))
     id_dataset_name =  os.getenv("ID_DATASET")
     en_dataset_name =  os.getenv("EN_DATASET")
+    access_token =  os.getenv("ACCESS_TOKEN")
 
     print("Loading dataset from huggingface hub")
-    id_dataset = load_dataset(id_dataset_name, split = 'train').select(range(100000))
-    en_dataset = load_dataset(en_dataset_name, split = 'train').select(range(100000))
+    id_dataset = load_dataset(id_dataset_name, split = 'train', token = access_token)
+    en_dataset = load_dataset(en_dataset_name, split = 'train', token = access_token)
     if show_stats:
         print("Dataset distribution")
         print("Indonesian rows:", len(id_dataset))
@@ -52,16 +52,8 @@ if __name__ == "__main__":
     reverse_label_index = {str(v):k for k,v in label_index.items()}
 
     dataset = concatenate_datasets([id_dataset, en_dataset]).shuffle(seed = 42)
-    dataset = dataset.filter(lambda example: example['label_text'] in label_index.keys(), num_proc = CPU_COUNT)
     col_names = dataset.column_names
     num_rows = len(dataset)
-
-    def convert_labels_to_ids(examples):
-        examples['label'] = [label_index[x] for x in examples['label_text']]
-        return examples
-
-    print('Convert string labels into integer labels')
-    dataset = dataset.map(convert_labels_to_ids, batched = True, num_proc = CPU_COUNT)
 
     print('Loading model to finetune')
     device = xm.xla_device()
@@ -76,17 +68,20 @@ if __name__ == "__main__":
         ).to(device)
     
     def tokenize_function(examples):
-        return tokenizer(
+        result = tokenizer(
             examples["text"],
             padding = "max_length",
             truncation = True,
-            max_length = 128)
+            max_length = 128,
+            return_tensor = 'pt')
+        result['label'] = [label_index[x] for x in examples['label_text']]
+        return result
 
     print(f'Take {np.round(val_size*100,2)} percent data as evaluation dataset')
     train_dataset = dataset.select(range(int(num_rows*val_size), num_rows))
-    train_dataset = train_dataset.map(tokenize_function, batched = True, remove_columns = col_names, num_proc = CPU_COUNT)
+    train_dataset = train_dataset.map(tokenize_function, batched = True, batch_size = 100000, remove_columns = col_names)
     eval_dataset = dataset.select(range(int(num_rows*val_size)))
-    eval_dataset = eval_dataset.map(tokenize_function, batched = True, remove_columns = col_names, num_proc = CPU_COUNT)
+    eval_dataset = eval_dataset.map(tokenize_function, batched = True, batch_size = 100000, remove_columns = col_names)
 
     metric = evaluate.load("accuracy")
     def compute_metrics(eval_pred):
@@ -102,8 +97,7 @@ if __name__ == "__main__":
                                     num_train_epochs = epoch,
                                     save_strategy = "no",
                                     learning_rate = learning_rate,
-                                    tpu_num_cores = 8,
-                                    dataloader_num_workers = CPU_COUNT
+                                    tpu_num_cores = 8
                                     )
     trainer = Trainer(
         model = model,
@@ -127,7 +121,6 @@ if __name__ == "__main__":
 
     model_metadata = {'model_id': model_id,
                       'base_model_name' : base_model_name,
-                      'num_layers' : num_layers,
                       'epoch' : epoch,
                       'learning_rate' : learning_rate,
                       'batch_size' : batch_size,
