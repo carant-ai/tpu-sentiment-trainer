@@ -65,7 +65,7 @@ if __name__ == "__main__":
         output_hidden_states = False,
         label2id = label_index,
         id2label = reverse_label_index
-        ).to(device)
+        )# .to(device)
     
     def tokenize_function(examples):
         result = tokenizer(
@@ -97,7 +97,7 @@ if __name__ == "__main__":
                                     num_train_epochs = epoch,
                                     save_strategy = "no",
                                     learning_rate = learning_rate,
-                                    tpu_num_cores = 8
+                                    # tpu_num_cores = 8
                                     )
     trainer = Trainer(
         model = model,

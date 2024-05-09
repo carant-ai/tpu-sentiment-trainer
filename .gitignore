@@ -1,3 +1,5 @@
 *.txt
 model_logs
 __pycache__
+lightning_logs
+*.out
