@@ -73,7 +73,7 @@ if __name__ == "__main__":
             padding = "max_length",
             truncation = True,
             max_length = 128,
-            return_tensor = 'pt')
+            return_tensors = 'pt')
         result['label'] = [label_index[x] for x in examples['label_text']]
         return result
 
