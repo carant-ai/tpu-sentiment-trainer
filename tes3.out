@@ -1,25 +1,0 @@
-Using the latest cached version of the dataset since thonyyy/indonesian_sentiment_dataset_v1 couldn't be found on the Hugging Face Hub
-WARNING:datasets.load:Using the latest cached version of the dataset since thonyyy/indonesian_sentiment_dataset_v1 couldn't be found on the Hugging Face Hub
-Found the latest cached dataset configuration 'default' at /home/hikar/.cache/huggingface/datasets/thonyyy___indonesian_sentiment_dataset_v1/default/0.0.0/1c2bd788a03c5ae8e92d1e4fb259ccd2704ec379 (last modified on Thu May  9 09:43:20 2024).
-WARNING:datasets.packaged_modules.cache.cache:Found the latest cached dataset configuration 'default' at /home/hikar/.cache/huggingface/datasets/thonyyy___indonesian_sentiment_dataset_v1/default/0.0.0/1c2bd788a03c5ae8e92d1e4fb259ccd2704ec379 (last modified on Thu May  9 09:43:20 2024).
-Using the latest cached version of the dataset since thonyyy/english_sentiment_dataset_v1 couldn't be found on the Hugging Face Hub
-WARNING:datasets.load:Using the latest cached version of the dataset since thonyyy/english_sentiment_dataset_v1 couldn't be found on the Hugging Face Hub
-Found the latest cached dataset configuration 'default' at /home/hikar/.cache/huggingface/datasets/thonyyy___english_sentiment_dataset_v1/default/0.0.0/73438c180c8dc9edce83e4995625413b66dda6a6 (last modified on Thu May  9 08:43:14 2024).
-WARNING:datasets.packaged_modules.cache.cache:Found the latest cached dataset configuration 'default' at /home/hikar/.cache/huggingface/datasets/thonyyy___english_sentiment_dataset_v1/default/0.0.0/73438c180c8dc9edce83e4995625413b66dda6a6 (last modified on Thu May  9 08:43:14 2024).
-/home/hikar/.local/lib/python3.8/site-packages/huggingface_hub/file_download.py:1132: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
-  warnings.warn(
-Some weights of XLMRobertaForSequenceClassification were not initialized from the model checkpoint at xlm-roberta-base and are newly initialized: ['classifier.dense.bias', 'classifier.dense.weight', 'classifier.out_proj.bias', 'classifier.out_proj.weight']
-You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
-Read model hyperparameter from .env
-Loading dataset from huggingface hub
-Loading model to finetune
-Take 5.0 percent data as evaluation dataset
-Start training model (all layers)
-  0%|          | 0/43132 [00:00<?, ?it/s]  0%|          | 1/43132 [00:51<621:24:58, 51.87s/it]  0%|          | 2/43132 [01:52<684:53:08, 57.17s/it]  0%|          | 3/43132 [02:22<533:14:00, 44.51s/it]  0%|          | 4/43132 [02:53<468:37:44, 39.12s/it]  0%|          | 5/43132 [03:21<423:06:41, 35.32s/it]  0%|          | 6/43132 [03:52<404:46:04, 33.79s/it]  0%|          | 7/43132 [04:22<388:21:52, 32.42s/it]  0%|          | 8/43132 [04:47<362:00:58, 30.22s/it]  0%|          | 9/43132 [05:12<342:16:20, 28.57s/it]  0%|          | 10/43132 [05:38<332:02:08, 27.72s/it]  0%|          | 11/43132 [06:07<338:25:24, 28.25s/it]  0%|          | 12/43132 [06:32<326:11:28, 27.23s/it]  0%|          | 13/43132 [06:57<317:54:29, 26.54s/it]  0%|          | 14/43132 [07:26<324:31:48, 27.10s/it]  0%|          | 15/43132 [07:50<316:08:53, 26.40s/it]  0%|          | 16/43132 [08:14<306:52:14, 25.62s/it]  0%|          | 17/43132 [08:43<316:53:14, 26.46s/it]  0%|          | 18/43132 [09:09<318:35:40, 26.60s/it]https://symbolize.stripped_domain/r/?trace=7fa08a7bfcab,7fa1694f60bf&map=5f4fb88af97be3ecacc71363136bb015b2a07119:7fa08a7a7000-7fa08a7cb08c 
-*** SIGTERM received by PID 35553 (TID 35553) on cpu 102 from PID 21252; stack trace: ***
-PC: @     0x7fa08a7bfcab  (unknown)  (unknown)
-    @     0x7fa012034a1a       1152  (unknown)
-    @     0x7fa1694f60c0  (unknown)  (unknown)
-https://symbolize.stripped_domain/r/?trace=7fa08a7bfcab,7fa012034a19,7fa1694f60bf&map=5f4fb88af97be3ecacc71363136bb015b2a07119:7fa08a7a7000-7fa08a7cb08c,ceee8fa20ddf9c34af43f587221e91de:7fa00510c000-7fa01224b840 
-E0509 10:48:35.975440   35553 coredump_hook.cc:360] RAW: Remote crash gathering disabled for SIGTERM.
-E0509 10:48:36.150755   35553 process_state.cc:784] RAW: Raising signal 15 with default behavior
