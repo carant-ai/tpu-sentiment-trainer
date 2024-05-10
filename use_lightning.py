@@ -91,7 +91,7 @@ class Model(LightningModule):
 
 
 class Sentence(LightningDataModule):
-    def __init__(self, model_name: str = "xlm-roberta-base", val_ratio = 0.05):
+    def __init__(self, model_name: str = "xlm-roberta-base", val_ratio = 0.05, label_index = {}):
         super().__init__()
         access_token = os.getenv("ACCESS_TOKEN")
         id_dataset = load_dataset(
@@ -102,7 +102,7 @@ class Sentence(LightningDataModule):
         )
         concat_ds = concatenate_datasets([id_dataset, en_dataset]).shuffle(seed=42)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        dataset = tokenize(concat_ds, self.tokenizer)
+        dataset = tokenize(concat_ds, self.tokenizer, label_index)
         dataset.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
         dataset = dataset.train_test_split(test_size = val_ratio)
         self.train_dataset = dataset['train']
@@ -127,7 +127,7 @@ def main():
         "positive": 2
         }
     model = Model(model_name = os.getenv("BASE_MODEL_NAME"), label_index = label_index)
-    data = Sentence(model_name = os.getenv("BASE_MODEL_NAME"), val_ratio = float(os.getenv("VAL_SIZE")))
+    data = Sentence(model_name = os.getenv("BASE_MODEL_NAME"), val_ratio = float(os.getenv("VAL_SIZE")), label_index = label_index)
     checkpoint_callback = ModelCheckpoint(monitor = 'val_loss')
     trainer = Trainer(accelerator = os.getenv("ACCELERATOR"), max_epochs = int(os.getenv("EPOCH")), callbacks =  [checkpoint_callback])
     trainer.fit(model, data)
