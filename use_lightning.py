@@ -131,7 +131,8 @@ def main():
     checkpoint_callback = ModelCheckpoint(monitor = 'val_loss')
     trainer = Trainer(accelerator = os.getenv("ACCELERATOR"), max_epochs = int(os.getenv("EPOCH")), callbacks =  [checkpoint_callback])
     trainer.fit(model, data)
-    model.model.push_to_hub(os.getenv("HUB_MODEL_NAME"))
+    m = Model.load_from_checkpoint(checkpoint_callback.best_model_path)
+    m.model.push_to_hub(os.getenv("HUB_MODEL_NAME"))
     data.tokenizer.push_to_hub(os.getenv("HUB_MODEL_NAME"))
 
 if __name__ == "__main__":
