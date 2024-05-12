@@ -94,14 +94,14 @@ class Model(LightningModule):
 class Sentence(LightningDataModule):
     def __init__(self, model_name: str = "xlm-roberta-base", val_ratio = 0.05, label_index = {}):
         super().__init__()
-        access_token = os.getenv("ACCESS_TOKEN")
         id_dataset = load_dataset(
-            os.getenv("ID_DATASET"), split = "train", token = access_token
+            os.getenv("ID_DATASET"), split = "train"
         )
         en_dataset = load_dataset(
-            os.getenv("EN_DATASET"), split = "train", token = access_token
+            os.getenv("EN_DATASET"), split = "train"
         )
         concat_ds = concatenate_datasets([id_dataset, en_dataset]).shuffle(seed=42)
+        concat_ds = concat_ds.filter(lambda row: row['label_text'] in ['negative','positive','neutral'])
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         dataset = tokenize(concat_ds, self.tokenizer, label_index)
         dataset.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
