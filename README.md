@@ -1,4 +1,4 @@
-# general-sentiment-trainer
+# tpu-sentiment-trainer
 Reference Paper: [Auxiliary-Sentence Construction for Implicit Aspect Learning in Sentiment Analysis](https://arxiv.org/abs/2203.11702)
 
 In this repository, we aim to create a good bilinggual (English and Indonesian) sentiment model by finetuning XLM Roberta model on dedicated datasets.
